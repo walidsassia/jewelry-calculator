@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jewelry Value Calculator</title>
+  <style>
+    :root {
+      --primary-color: #a1c4fd; /* Pastel Blue */
+      --secondary-color: #d2e3fc; /* Light Pastel Blue */
+      --accent-color: #7e7e7e;    /* Gray for text */
+      --success-color: #a3d9a5;   /* Light Green for success */
+      --warning-color: #ffd27f;   /* Light Orange for fair */
+      --danger-color: #f9a1a1;    /* Light Red for bad */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f0f4f8;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      font-weight: 400;
+      font-size: 2.2rem;
+    }
+
+    .subtitle {
+      color: var(--accent-color);
+      font-size: 1.1rem;
+    }
+
+    .calculator {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent-color);
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border 0.3s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+      grid-column: span 2;
+    }
+
+    button:hover {
+      background-color: #85b2e0;
+    }
+
+    .results {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .result-row:last-child {
+      border-bottom: none;
+    }
+
+    .result-label {
+      font-weight: 500;
+      color: var(--accent-color);
+    }
+
+    .result-value {
+      font-weight: 600;
+    }
+
+    .comparison {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .comparison-result {
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 8px;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+
+    .good-deal {
+      background-color: var(--success-color);
+      color: #317339;
+    }
+
+    .fair-deal {
+      background-color: var(--warning-color);
+      color: #875f26;
+    }
+
+    .bad-deal {
+      background-color: var(--danger-color);
+      color: #b23c3c;
+    }
+
+    .info-section {
+      margin-top: 30px;
+      padding: 15px;
+      background-color: var(--secondary-color);
+      border-radius: 8px;
+    }
+
+    .info-section h2 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .calculator {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        grid-column: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Jewelry Value Calculator</h1>
+      <p class="subtitle">Estimate the true value of your gold jewelry in real time</p>
+    </header>
+
+    <div class="calculator">
+      <div class="input-group">
+        <label for="purity">Gold Purity</label>
+        <select id="purity" onchange="calculateEstimatedValue()" tabindex="1">
+          <option value="24">24 Karat (99.9% pure)</option>
+          <option value="21">21 Karat (87.5% pure)</option>
+          <option value="18" selected>18 Karat (75% pure)</option>
+          <option value="14">14 Karat (58.3% pure)</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="weight">Weight (grams)</label>
+        <input type="number" id="weight" min="0" step="0.01" placeholder="Enter weight" oninput="calculateEstimatedValue()" tabindex="2">
+      </div>
+
+      <div class="input-group">
+        <label for="goldPrice">Gold Spot Price (per troy ounce)</label>
+        <input type="number" id="goldPrice" min="0" step="0.01" placeholder="Enter current price" oninput="calculateEstimatedValue()" tabindex="3">
+      </div>
+
+      <div class="input-group">
+        <label for="estimatedValue">Estimated Value ($)</label>
+        <input type="text" id="estimatedValue" disabled value="0.00">
+      </div>
+
+      <div class="input-group">
+        <label for="jewelryOffer">Jeweler's Offer ($)</label>
+        <input type="number" id="jewelryOffer" min="0" step="0.01" placeholder="Enter offer amount" tabindex="4">
+      </div>
+
+      <!-- New field for displaying Gold Price per Gram -->
+      <div class="input-group">
+        <label for="pricePerGram">Gold Price per Gram ($)</label>
+        <input type="text" id="pricePerGram" disabled value="0.00">
+      </div>
+
+      <button onclick="calculateFinalValue()" tabindex="5">Calculate</button>
+    </div>
+
+    <div class="results" id="resultsSection">
+      <div class="result-row">
+        <span class="result-label">Estimated Metal Value:</span>
+        <span class="result-value" id="metalValue">-</span>
+      </div>
+
+      <div class="result-row">
+        <span class="result-label">Jeweler's Offer:</span>
+        <span class="result-value" id="offerValue">-</span>
+      </div>
+
+      <div class="comparison">
+        <div class="result-row">
+          <span class="result-label">Difference:</span>
+          <span class="result-value" id="difference">-</span>
+        </div>
+
+        <div class="comparison-result" id="dealAssessment">
+          Please enter the jeweler's offer to see the assessment
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2>Gold Purity and Value</h2>
+      <p>Gold purity is measured in karats. The higher the karat, the purer the gold. Here's a breakdown:</p>
+      <ul style="list-style: none; margin-top: 10px;">
+        <li>24K: 99.9% pure</li>
+        <li>21K: 87.5% pure</li>
+        <li>18K: 75% pure</li>
+        <li>14K: 58.3% pure</li>
+      </ul>
+    </div>
+
+    <footer class="footer">
+      &copy; 2025 Jewelry Value Calculator
+    </footer>
+  </div>
+
+  <script>
+    function calculateEstimatedValue() {
+      const purity = parseFloat(document.getElementById("purity").value);
+      const weight = parseFloat(document.getElementById("weight").value);
+      const goldPrice = parseFloat(document.getElementById("goldPrice").value);
+
+      if (!purity || !weight || !goldPrice) return;
+
+      const purityPercentage = purity / 24;
+      const pricePerGram = (goldPrice / 31.1035) * purityPercentage;
+      const pureGoldWeight = weight * purityPercentage;
+      const metalValue = pureGoldWeight * pricePerGram;
+
+      document.getElementById("estimatedValue").value = "$" + metalValue.toFixed(2);
+      document.getElementById("pricePerGram").value = "$" + pricePerGram.toFixed(2);
+    }
+
+    function calculateFinalValue() {
+      const purity = parseFloat(document.getElementById("purity").value);
+      const weight = parseFloat(document.getElementById("weight").value);
+      const goldPrice = parseFloat(document.getElementById("goldPrice").value);
+      const jewelryOffer = parseFloat(document.getElementById("jewelryOffer").value);
+
+      if (!purity || !weight || !goldPrice || !jewelryOffer) {
+        alert("Please fill out all fields.");
+        return;
+      }
+
+      const purityPercentage = purity / 24;
+      const pricePerGram = (goldPrice / 31.1035) * purityPercentage;
+      const pureGoldWeight = weight * purityPercentage;
+      const metalValue = pureGoldWeight * pricePerGram;
+      const difference = jewelryOffer - metalValue;
+
+      document.getElementById("metalValue").textContent = "$" + metalValue.toFixed(2);
+      document.getElementById("offerValue").textContent = "$" + jewelryOffer.toFixed(2);
+      document.getElementById("difference").textContent = "$" + difference.toFixed(2);
+
+      const resultsSection = document.getElementById("resultsSection");
+      resultsSection.style.display = "block";
+
+      const dealAssessment = document.getElementById("dealAssessment");
+      if (jewelryOffer > metalValue) {
+        dealAssessment.textContent = "Good Deal!";
+        dealAssessment.className = "comparison-result good-deal";
+      } else if (difference >= 0 && difference <= 10) {
+        dealAssessment.textContent = "Fair Deal!";
+        dealAssessment.className = "comparison-result fair-deal";
+      } else {
+        dealAssessment.textContent = "Poor Deal!";
+        dealAssessment.className = "comparison-result bad-deal";
+      }
+    }
+  </script>
+</body>
+</html>
